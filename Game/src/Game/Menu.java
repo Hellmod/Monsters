@@ -92,8 +92,9 @@ public class Menu extends JFrame implements ActionListener , KeyListener
 		//-----------------
 		//---------------Test
 		lTekst = new JLabel("<html>M - monster <br> "
-				+ "WSAD - ruch <br> "
-				+ "Strza³ki - strza³</html>");
+				+ "N - super monster <br>"
+				+ "WSAD - move <br> "
+				+ "Arrow keys - shot</html>");
 		lTekst.setBounds(40, 260, 250, 60);
 		frame.add(lTekst);
 		//-----------------

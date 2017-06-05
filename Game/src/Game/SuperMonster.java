@@ -10,46 +10,71 @@ public class SuperMonster extends Monster {
 	public int motionX, motionY, health;
 	Color c;
 
-	public SuperMonster() {
+	public SuperMonster() {// tworzenie uperMonster
 
-		// this.x=Game.game.random.nextInt(Game.height);
-		// this.y=Game.game.random.nextInt(Game.width);
-		this.x = 0;
-		this.y = 500;
+		this.x=Game.game.random.nextInt(Game.height);
+		this.y=Game.game.random.nextInt(Game.width);		
 		health = 3;
 		c = new Color(0, 255, 125);
-		calculate();
+		motionX = 2;
+		motionY = 2;
 	}
 
-	private void calculate()
-	{
-		double angle;
-		int a=this.x-Game.game.player.getX();
-		int c=this.y-Game.game.player.getY();
-		if(a<0)a*=-1;
-		if(c<0)c*=-1;
-		if(a==0)a=1;
-		angle = (double)c/a;
-		motionX=speed;
-		motionY=(int) (motionX*angle);
+	private void calculate() {
+			
+		// wykrywanie po³o¿enia gracza
+		if (this.y + height - motionY > Game.game.player.getY()) {
+			if(this.x + width - motionX > Game.game.player.getX()){
+				//System.out.println("góra_lewo");
+				if(motionX>0)
+					motionX*=-1;
+				if(motionY>0)
+					motionY*=-1;
+			}				
+			else{
+				//System.out.println("góra_prawo");
+				if(motionX<0)
+					motionX*=-1;
+				if(motionY>0)
+					motionY*=-1;
+								
+			}				
+		}
+		else{
+			if(this.x + width - motionX > Game.game.player.getX()){
+				//System.out.println("dó³_lewo");
+				if(motionX>0)
+					motionX*=-1;
+				if(motionY<0)
+					motionY*=-1;
 
-		
+			}
+			else{
+				//System.out.println("dó³_prawo");
+				if(motionX<0)
+					motionX*=-1;
+				if(motionY<0)
+					motionY*=-1;
+
+			}				
+		}
+
+
 	}
 
 	void update() {
 		calculate();
-		if (health == 2)
-			c = new Color(255, 0, 125);
-		if (health == 1)
-			c = new Color(125, 0, 255);
 		if (health == 0)
 			Game.lisM.remove(this);
-
-		// System.out.println("WOO");
-
+		else if (health == 1)
+			c = new Color(125, 0, 255);
+		else if (health == 2)
+			c = new Color(255, 0, 125);
+		//róch
 		this.x += motionX * speed;
 		this.y += motionY * speed;
 
+		// wykrywanie kolizji z pociskiem
 		for (int i = 0; i < Game.lis.size(); i++) {
 			if (this.y + height >= Game.lis.get(i).getY()) {
 
@@ -58,14 +83,13 @@ public class SuperMonster extends Monster {
 						if (x <= Game.lis.get(i).x + Ball.width) {
 							health--;
 							Game.lis.remove(i);
-							// c = new Color(255, 0, 0);
+							 //TODO Add player points 
 						}
 					}
-
-				// Game.lisM.remove(this);
 			}
 		}
 
+		// wykrywanie kolizji z graczem
 		if (this.y + height >= Game.game.player.getY()) {
 			if (this.y <= Game.game.player.getY() + Game.game.player.getHeight())
 				if (x + width >= Game.game.player.getX())
@@ -74,30 +98,9 @@ public class SuperMonster extends Monster {
 						Game.game.player.setHealth(l - 1);
 						Game.lisM.remove(this);
 					}
-
 		}
 
-		if (this.y + height - motionY > Game.height || this.y + motionY < 0) {
-			if (this.motionY < 0) {
-				this.y = 0;
-				this.motionY = speed;
-				// System.out.println("góra");
-			} else {
-				this.motionY = -speed;
-				this.y = Game.height - height;
-				// System.out.println("dó³");
-			}
-		} else if (this.x + width - motionX > Game.width || this.x + motionX < 0) {
-			if (this.motionX < 0) {
-				this.x = 0;
-				this.motionX = speed;
-				// System.out.println("lewo");
-			} else {
-				this.motionX = -speed;
-				this.x = Game.width - width;
-				// System.out.println("prawo");
-			}
-		}
+		
 
 	}
 
@@ -105,5 +108,6 @@ public class SuperMonster extends Monster {
 		g.setColor(c);
 		g.fillRect(x, y, width, height);
 	}
+
 
 }
