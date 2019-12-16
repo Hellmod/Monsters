@@ -136,7 +136,7 @@ public class SuperMonster extends Monster {
 		if (health == 1)
 			c = new Color(125, 0, 255);
 		if (health == 0)
-			Game.lisM.remove(this);
+			Game.listMonster.remove(this);
 
 		// System.out.println("WOO");
 
@@ -144,14 +144,14 @@ public class SuperMonster extends Monster {
 		this.y += motionY * speed;
 
 		//czy ktoś trafił gracza
-		for (int i = 0; i < Game.lis.size(); i++) {
-			if (this.y + height >= Game.lis.get(i).getY()) {
+		for (int i = 0; i < Game.listBall.size(); i++) {
+			if (this.y + height >= Game.listBall.get(i).getY()) {
 
-				if (this.y <= Game.lis.get(i).getY() + Ball.height)
-					if (x + width >= Game.lis.get(i).x) {
-						if (x <= Game.lis.get(i).x + Ball.width) {
+				if (this.y <= Game.listBall.get(i).getY() + Ball.height)
+					if (x + width >= Game.listBall.get(i).x) {
+						if (x <= Game.listBall.get(i).x + Ball.width) {
 							health--;
-							Game.lis.remove(i);
+							Game.listBall.remove(i);
 							// c = new Color(255, 0, 0);
 						}
 					}
@@ -166,7 +166,7 @@ public class SuperMonster extends Monster {
 					if (x <= Game.game.player.getX() + Game.game.player.getWidth()) {
 						int l = Game.game.player.getHealth();
 						Game.game.player.setHealth(l - 1);
-						Game.lisM.remove(this);
+						Game.listMonster.remove(this);
 					}
 
 		}
@@ -194,8 +194,8 @@ public class SuperMonster extends Monster {
 		}
 		
 		
-		for (int i = 0; i < Game.lis.size(); i++) {
-			if (this.y + height  > Game.lis.get(i).getY() || this.y + width < Game.lis.get(i).getX()) {
+		for (int i = 0; i < Game.listBall.size(); i++) {
+			if (this.y + height  > Game.listBall.get(i).getY() || this.y + width < Game.listBall.get(i).getX()) {
 				if (this.motionY < 0) {
 					this.y = 0;
 					this.motionY = speed;
