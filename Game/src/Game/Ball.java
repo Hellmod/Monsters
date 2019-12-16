@@ -64,8 +64,8 @@ public class Ball {
         g.fillOval(x, y, width, height);
     }
 }
-class BallThread extends Thread implements ActionListener {
-    Timer timer;
+class BallThread extends Thread  {
+
     Game game;
     Ball ball;
     BallThread(Game game){
@@ -73,34 +73,22 @@ class BallThread extends Thread implements ActionListener {
     }
 	@Override
 	public void run() {
-        timer = new Timer(20, this);//20
-        timer.start();
-        /*
 		while (true){
-		if(game.getGameStatus()==2){
-//                System.out.println("work");
-				for (int i = 0; i < game.listBall.size(); i++){
-				    System.out.println("działa");
-                    update(game.listBall.get(i));
-                }
-
-			}
-
-		}
-		*/
-
+		     update();
+            try {
+                this.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 	}
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        update();
-    }
+
 
 	public synchronized void update() {
 
         for (int i = 0; i < game.listBall.size(); i++) {
             ball=game.listBall.get(i);
 
-            System.out.println("update");
             ball.x += ball.motionX * ball.speed;
             ball.y += ball.motionY * ball.speed;
 

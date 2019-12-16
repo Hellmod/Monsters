@@ -169,13 +169,19 @@ public class Game implements ActionListener, KeyListener {
             listMonster.add(new SuperMonster());
         } else if (id == KeyEvent.VK_ESCAPE) {
             setGameStatus(1);
+            try {
+                t1.wait();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
 
             if (!menu.isVisible())
                 menu.setVisible(true);
 
         } else if (id == KeyEvent.VK_SPACE) {
 		    setGameStatus(2);
-
+		    if(t1.isAlive())
+                t1.notify();
             menu.setVisible(false);
         }
     }
