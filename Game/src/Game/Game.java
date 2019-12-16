@@ -17,6 +17,8 @@ import javax.swing.Timer;
 
 public class Game implements ActionListener, KeyListener {
 
+
+
     public int gameStatus = 0; //0 = Menu, 1 = Paused, 2 = Playing, 3 = Over
     public static Game game;
     public static int width = 800, height = 700;
@@ -30,7 +32,7 @@ public class Game implements ActionListener, KeyListener {
     //Shot shot;
     public static ArrayList<Ball> listBall = new ArrayList<Ball>();
     public static ArrayList<Monster> listMonster = new ArrayList<Monster>();
-	public Thread t1 = new BallThread();
+	public Thread t1 = new BallThread(this);
     Menu menu = new Menu();
 
     Timer t;
@@ -63,13 +65,14 @@ public class Game implements ActionListener, KeyListener {
 
 
     public void start() {
-        gameStatus = 1;
+        setGameStatus(1);
+
         player = new Player();
 		t1.start();
     }
 
     public void update() {
-        if (gameStatus == 2) {
+        if (getGameStatus() == 2) {
 
             //for (int i = 0; i < listBall.size(); i++) listBall.get(i).update();
             for (int i = 0; i < listMonster.size(); i++) listMonster.get(i).update();
@@ -92,13 +95,13 @@ public class Game implements ActionListener, KeyListener {
     }
 
     //TODO
-    public void render(Graphics2D g) {
+    public synchronized void render(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, width, height);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-        if (gameStatus == 1 || gameStatus == 2) {
+        if (getGameStatus() == 1 || getGameStatus() == 2) {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, width, height);
 			player.render(g);
@@ -106,7 +109,7 @@ public class Game implements ActionListener, KeyListener {
 
             for (int i = 0; i < listMonster.size(); i++) listMonster.get(i).render(g);
         }
-        if (gameStatus == 1) {
+        if (getGameStatus() == 1) {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Arial", 1, 50));
             g.drawString("PAUSED", width / 2 - 103, height / 2 - 25);
@@ -165,12 +168,14 @@ public class Game implements ActionListener, KeyListener {
         } else if (id == KeyEvent.VK_N) {
             listMonster.add(new SuperMonster());
         } else if (id == KeyEvent.VK_ESCAPE) {
-            gameStatus = 1;
+            setGameStatus(1);
+
             if (!menu.isVisible())
                 menu.setVisible(true);
 
         } else if (id == KeyEvent.VK_SPACE) {
-            gameStatus = 2;
+		    setGameStatus(2);
+
             menu.setVisible(false);
         }
     }
@@ -214,6 +219,9 @@ public class Game implements ActionListener, KeyListener {
     public boolean isNiesmiertelnosc() {
         return niesmiertelnosc;
     }
+    public synchronized int getGameStatus() { return gameStatus; }
+
+    public synchronized void setGameStatus(int gameStatus) {this.gameStatus = gameStatus;  }
 }
 
 

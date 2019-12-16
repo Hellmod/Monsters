@@ -1,7 +1,10 @@
 package Game;
 
+import javax.swing.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.Clock;
 
 public class Ball {
@@ -61,30 +64,55 @@ public class Ball {
         g.fillOval(x, y, width, height);
     }
 }
-class BallThread extends Thread{
+class BallThread extends Thread implements ActionListener {
+    Timer timer;
+    Game game;
+    Ball ball;
+    BallThread(Game game){
+        this.game=game;
+    }
 	@Override
 	public void run() {
+        timer = new Timer(20, this);//20
+        timer.start();
+        /*
 		while (true){
+		if(game.getGameStatus()==2){
+//                System.out.println("work");
+				for (int i = 0; i < game.listBall.size(); i++){
+				    System.out.println("działa");
+                    update(game.listBall.get(i));
+                }
 
-			//if(Game.game.gameStatus==2){
+			}
 
-				for (int i = 0; i < Game.game.listBall.size(); i++)
-					update(Game.game.listBall.get(i));
-			//}
 		}
+		*/
+
+	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        update();
+    }
+
+	public synchronized void update() {
+
+        for (int i = 0; i < game.listBall.size(); i++) {
+            ball=game.listBall.get(i);
+
+            System.out.println("update");
+            ball.x += ball.motionX * ball.speed;
+            ball.y += ball.motionY * ball.speed;
+
+            if (ball.y + ball.height - ball.motionY > Game.height || ball.y + ball.motionY < 0) {
+                if (ball.motionY < 0) Game.listBall.remove(ball);
+                else Game.listBall.remove(ball);
+            } else if (ball.x + ball.width - ball.motionX > Game.width || ball.x + ball.motionX < 0) {
+                if (ball.motionX < 0) Game.listBall.remove(ball);
+                else Game.listBall.remove(ball);
+            }
+        }
 	}
 
-	public void update(Ball ball) {
-		System.out.println("update");
-		ball.x += ball.motionX * ball.speed;
-		ball.y += ball.motionY * ball.speed;
 
-		if (ball.y + ball.height - ball.motionY > Game.height || ball.y + ball.motionY < 0) {
-			if (ball.motionY < 0) Game.listBall.remove(ball);
-			else Game.listBall.remove(ball);
-		} else if (ball.x + ball.width - ball.motionX > Game.width || ball.x + ball.motionX < 0) {
-			if (ball.motionX < 0) Game.listBall.remove(ball);
-			else Game.listBall.remove(ball);
-		}
-	}
 }
