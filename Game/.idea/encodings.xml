@@ -3,5 +3,6 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/Game/Menu.java" charset="windows-1250" />
     <file url="file://$PROJECT_DIR$/src/Game/NormalMonster.java" charset="windows-1250" />
+    <file url="file://$PROJECT_DIR$/src/SQLlight/BazaLonczenie.java" charset="windows-1250" />
   </component>
 </project>
