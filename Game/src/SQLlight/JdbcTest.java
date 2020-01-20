@@ -14,7 +14,7 @@ public class JdbcTest {
         b.insertZagrozenia("Tsunami", 1, 1, 4, "dużo wody");
         b.insertZagrozenia("Tsunami", 1, 1, 4, "dużo wody");
         b.insertZagrozenia("Tsunami", 1, 1, 4, "dużo wody");
-        
+
         b.insertUzytkownik("ala", "as");
         b.insertUzytkownik("ala", "as");
         b.insertUzytkownik("ala", "as");

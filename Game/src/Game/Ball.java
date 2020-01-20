@@ -74,11 +74,13 @@ class BallThread extends Thread  {
 	@Override
 	public void run() {
 		while (true){
-		     update();
-            try {
-                this.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+		    if(game.getGameStatus()==2) {
+                update();
+                try {
+                    this.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 	}

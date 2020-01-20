@@ -2,8 +2,8 @@ package model;
 
 public class Uzytkownicy {
     private int id;
-    private String tytul;
-    private String autor;
+    private String login;
+    private String haslo;
 
     public int getId() {
         return id;
@@ -11,28 +11,26 @@ public class Uzytkownicy {
     public void setId(int id) {
         this.id = id;
     }
-    public String getTytul() {
-        return tytul;
+    public String getLogin() {
+        return login;
     }
-    public void setTytul(String tytul) {
-        this.tytul = tytul;
+    public void setLogin(String login) {this.login = login;}
+    public String getHaslo() {
+        return haslo;
     }
-    public String getAutor() {
-        return autor;
-    }
-    public void setAutor(String autor) {
-        this.autor = autor;
+    public void setHaslo(String haslo) {
+        this.haslo = haslo;
     }
 
     public Uzytkownicy() {}
-    public Uzytkownicy(int id, String tytul, String autor) {
+    public Uzytkownicy(int id, String login, String haslo) {
         this.id = id;
-        this.tytul = tytul;
-        this.autor = autor;
+        this.login = login;
+        this.haslo = haslo;
     }
 
     @Override
     public String toString() {
-        return "["+id+"] - "+tytul+" - "+autor;
+        return "["+id+"] - "+ login +" - "+ haslo;
     }
 }

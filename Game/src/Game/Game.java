@@ -8,6 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -29,11 +34,12 @@ public class Game implements ActionListener, KeyListener {
     public boolean w, s, a, d, v, ls, rs, us, ds;
     public Random random;
     public JFrame jframe;
-    //Shot shot;
     public static ArrayList<Ball> listBall = new ArrayList<Ball>();
     public static ArrayList<Monster> listMonster = new ArrayList<Monster>();
 	public Thread t1 = new BallThread(this);
+    public Thread serverThread;
     Menu menu = new Menu();
+
 
     Timer t;
     Timer timer;
@@ -68,11 +74,14 @@ public class Game implements ActionListener, KeyListener {
         setGameStatus(1);
 
         player = new Player();
+        serverThread= new ServerThread(this.player,this);
 		t1.start();
+		serverThread.start();
     }
 
     public void update() {
         if (getGameStatus() == 2) {
+
 
             //for (int i = 0; i < listBall.size(); i++) listBall.get(i).update();
             for (int i = 0; i < listMonster.size(); i++) listMonster.get(i).update();
@@ -169,19 +178,25 @@ public class Game implements ActionListener, KeyListener {
             listMonster.add(new SuperMonster());
         } else if (id == KeyEvent.VK_ESCAPE) {
             setGameStatus(1);
+            /*
             try {
                 t1.wait();
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
+            */
+
 
             if (!menu.isVisible())
                 menu.setVisible(true);
 
         } else if (id == KeyEvent.VK_SPACE) {
 		    setGameStatus(2);
+		    /*
 		    if(t1.isAlive())
                 t1.notify();
+
+		     */
             menu.setVisible(false);
         }
     }
@@ -228,6 +243,68 @@ public class Game implements ActionListener, KeyListener {
     public synchronized int getGameStatus() { return gameStatus; }
 
     public synchronized void setGameStatus(int gameStatus) {this.gameStatus = gameStatus;  }
+}
+
+class ServerThread extends Thread  {
+    Socket gniazdo;
+    BufferedReader czytelnik;
+    PrintWriter pisarz;
+    Player player;
+    Game game;
+
+    ServerThread(Player player,Game game){
+        this.player=player;
+        this.game=game;
+    }
+    @Override
+    public void run() {
+        konfigurujKomunikacje();
+        while (true){
+            if(game.getGameStatus()==2) {
+                System.out.println(player.x+" "+player.y);
+                //sendWspulrzendne(player.x, player.y);
+                sendPlayer(player);
+                try {
+                    this.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    private void sendWspulrzendne(int x, int y){
+        try {
+            pisarz.print(x);
+            pisarz.print(y);
+            pisarz.flush();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void sendPlayer(Player player){
+        try {
+            pisarz.print(player);
+            pisarz.flush();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void konfigurujKomunikacje() {
+        try {
+            gniazdo = new Socket("127.0.0.1", 5000);
+            InputStreamReader czytelnikStrm = new InputStreamReader(gniazdo.getInputStream());
+            czytelnik = new BufferedReader(czytelnikStrm);
+            pisarz = new PrintWriter(gniazdo.getOutputStream());
+            System.out.println("obsÅ‚uga sieci przygotowana");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }
 
 
