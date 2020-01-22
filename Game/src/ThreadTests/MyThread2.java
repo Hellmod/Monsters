@@ -3,7 +3,7 @@ package ThreadTests;
 import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 
-public class MyThread extends Thread {
+public class MyThread2 extends Thread {
     String nazwa = "";
     TicTacToe ticTacToe;
     Scanner scan = new Scanner(System.in);
@@ -11,22 +11,13 @@ public class MyThread extends Thread {
 
     @Override
     public void run() {
-
         System.out.println("Urumiono " + nazwa);
 
         while (true) {
             jaki_ruch();
-            try {
 
+            Start.bariera1.reset();
 
-                Start.bariera1.await();
-
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (BrokenBarrierException e) {
-                e.printStackTrace();
-            }
         }
 
     }
@@ -42,13 +33,13 @@ public class MyThread extends Thread {
 
     }
 
-    public MyThread(String nazwa, TicTacToe game, Thread przeciwnik) {
+    public MyThread2(String nazwa, TicTacToe game, Thread przeciwnik) {
         this.nazwa = nazwa;
         this.ticTacToe = game;
         this.przeciwnik = przeciwnik;
     }
 
-    public MyThread(String nazwa, TicTacToe game) {
+    public MyThread2(String nazwa, TicTacToe game) {
         this.nazwa = nazwa;
         this.ticTacToe = game;
     }
