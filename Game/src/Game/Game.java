@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -57,6 +58,7 @@ public class Game implements ActionListener, KeyListener {
         jframe = new JFrame("Game V 0.2");
         renderer = new Renderer();
         jframe.setSize(width + 15, height + 35);
+        jframe.setLocation(width,0);
         jframe.setVisible(true);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.add(renderer);
@@ -124,6 +126,9 @@ public class Game implements ActionListener, KeyListener {
             for (int i = 0; i < listMonster.size(); i++) listMonster.get(i).render(g);
 
             for (int i = 0; i < listPlayer.size(); i++) listPlayer.get(i).render(g);
+            if (listPlayer.size()!=0){
+                System.out.println(listPlayer.get(0).x+" "+listPlayer.get(0).y);
+            }
         }
         if (getGameStatus() == 1) {
             g.setColor(Color.WHITE);
@@ -253,10 +258,10 @@ public class Game implements ActionListener, KeyListener {
 }
 
 class ServerThread extends Thread  {
-    Socket gniazdo;
+
     BufferedReader czytelnik;
     PrintWriter pisarz;
-
+    Socket gniazdo;
 
     
     Player player;
@@ -267,11 +272,13 @@ class ServerThread extends Thread  {
         this.listPlayer=listPlayer;
         this.player=player;
         this.game=game;
+        konfigurujKomunikacje();
         Thread receiverThread = new Thread(new MessageReceiver());
+        receiverThread.start();
     }
     @Override
     public void run() {
-        konfigurujKomunikacje();
+
         while (true){
 
             if(game.getGameStatus()==2) {
@@ -279,7 +286,7 @@ class ServerThread extends Thread  {
                 sendWspulrzendne(player.x, player.y);
 
                 try {
-                    this.sleep(1000);
+                    this.sleep(16);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -290,31 +297,34 @@ class ServerThread extends Thread  {
     public class MessageReceiver implements Runnable {
         public void run() {
             String message;
-            List<Integer> hashTab = null;
+            HashSet<Integer> hashTab = new HashSet<Integer>();
             hashTab.add(player.hashCode());
             try {
                 while ((message = czytelnik.readLine()) != null) {
-                    System.out.println("message: "+ message);
-                    /*
+
                     String[] tab =message.split(";");
                     int x= Integer.parseInt(tab[0]);
-                    int y= Integer.parseInt(tab[0]);
-                    int hashCode= Integer.parseInt(tab[0]);
-                    if(!hashTab.contains(hashCode))
-                        listPlayer.add(new Player());
-
-                    for (Player p:listPlayer) {
-                        if(p.hashCode()==hashCode) {
-                            p.x=x;
-                            p.y=y;
+                    int y= Integer.parseInt(tab[1]);
+                    int hashCode= Integer.parseInt(tab[2]);
+                    if(hashCode!=player.id) {
+                        if (!hashTab.contains(hashCode)) {
+                            Player p = new Player();
+                            p.id=hashCode;
+                            listPlayer.add(p);
                         }
 
+                        for (Player p : listPlayer) {
+                            if (p.id == hashCode) {
+                                p.setX(x);
+                                p.setY(y);
+                                break;
+                            }
+                        }
+                        System.out.println(listPlayer.size());
+                        //System.out.println("messages: "+ x+";"+y+";"+hashCode);
                     }
 
-
-
-                    System.out.println("message: "+ x+";"+y+";"+hashCode);
-                    */
+                   // for (Player p : listPlayer) System.out.println(p.getX()+" "+p.getY());
 
                 }
             } catch (Exception ex) {
@@ -327,7 +337,7 @@ class ServerThread extends Thread  {
     private void sendWspulrzendne(int x, int y){
         String kod=x+";"+y+";"+player.hashCode();
         try {
-            System.out.println(kod);
+            //System.out.println(kod);
             pisarz.println(kod);
             pisarz.flush();
         } catch (Exception ex) {
@@ -350,7 +360,7 @@ class ServerThread extends Thread  {
             InputStreamReader czytelnikStrm = new InputStreamReader(gniazdo.getInputStream());
             czytelnik = new BufferedReader(czytelnikStrm);
             pisarz = new PrintWriter(gniazdo.getOutputStream());
-            System.out.println("obsługa sieci przygotowana");
+            System.out.println("obsluga sieci przygotowana");
         } catch (IOException ex) {
             ex.printStackTrace();
         }

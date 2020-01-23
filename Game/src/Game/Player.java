@@ -7,32 +7,9 @@ public class Player {
     //public int score;
     public int paddleNumber;
 
-    public int x = 0, y = 0, width = 50, height = 50, health, speed;
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHealth() {
-        return health;
-    }
+    public int x = 0, y = 0, width = 50, height = 50, health, speed,id;
 
 
-    public int getHeight() {
-        return height;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
 
 
     public Player() {
@@ -42,7 +19,7 @@ public class Player {
 
     public void render(Graphics g) {
         g.setColor(Color.WHITE);
-        g.fillRect(x, y, width, height);
+        g.fillRect(getX(), getY(), width, height);
         for (int i = 0; i < health; i++) {
             g.setColor(Color.RED);
             g.fillRect(10 * i + i, 0, 10, 10);
@@ -102,5 +79,55 @@ public class Player {
         this.speed = speed;
     }
 
+    public int getPaddleNumber() {
+        return paddleNumber;
+    }
+
+    public void setPaddleNumber(int paddleNumber) {
+        this.paddleNumber = paddleNumber;
+    }
+
+    public synchronized void setX(int x) {
+        this.x = x;
+    }
+
+    public synchronized void setY(int y) {
+        this.y = y;
+    }
+
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+
+    public int getHeight() {
+        return height;
+    }
+
+    public synchronized int getX() {
+        return x;
+    }
+
+    public synchronized int getY() {
+        return y;
+    }
 
 }

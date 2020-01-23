@@ -26,7 +26,7 @@ public class CyclicBarrierV2 {
         });
     }
 
-    private static void losoweOpóźnienie() throws InterruptedException {
+    private static void losoweOpoznienie() throws InterruptedException {
         Thread.sleep(random.nextInt(opoznienie));
     }
 
@@ -34,20 +34,20 @@ public class CyclicBarrierV2 {
 
         private final int ktora;
 
-        private Pracownik(final int która) {
-            this.ktora = która;
+        private Pracownik(final int ktora) {
+            this.ktora = ktora;
         }
 
         @Override
         public void run() {
             try {
-                losoweOpóźnienie();
+                losoweOpoznienie();
                 dane[ktora] = ktora + 1;
                 bariera1.await();
-                losoweOpóźnienie();
+                losoweOpoznienie();
                 final int druga = dane[N_PRZESTAWIANYCH - 1 - ktora];
                 bariera1.await();
-                losoweOpóźnienie();
+                losoweOpoznienie();
                 dane[ktora] = druga;
                 bariera2.await();
             } catch (InterruptedException | BrokenBarrierException e) {
