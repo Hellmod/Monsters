@@ -44,6 +44,7 @@ public class Game implements ActionListener, KeyListener {
 	public Thread t1 = new BallThread(this);
     public Thread serverThread;
     Menu menu = new Menu();
+    private static int userId;
 
 
     Timer t;
@@ -71,6 +72,31 @@ public class Game implements ActionListener, KeyListener {
         timer.start();
     }
 
+    public Game(int id) {
+        game = this;
+        timer = new Timer(20, this);//20
+        ActionListener listener = new Shot();
+        t = new Timer(200, listener);//timer do strza?u
+        random = new Random();
+        jframe = new JFrame("Game V 0.2");
+        renderer = new Renderer();
+        jframe.setSize(width + 15, height + 35);
+        jframe.setLocation(width,0);
+        jframe.setVisible(true);
+        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jframe.add(renderer);
+        jframe.addKeyListener(this);
+        this.userId=id;
+        start();
+
+
+
+        player.setHealth(Integer.parseInt(menu.tHealth.getText()));
+        player.setSpeed(Integer.parseInt(menu.tSpeed.getText()));
+
+        timer.start();
+    }
+
     public void setNiesmiertelnosc(boolean niesmiertelnosc) {
         this.niesmiertelnosc = niesmiertelnosc;
     }
@@ -78,7 +104,7 @@ public class Game implements ActionListener, KeyListener {
 
     public void start() {
         setGameStatus(1);
-
+        System.out.println(userId);
         player = new Player();
         serverThread= new ServerThread(this.player,this,this.listPlayer);
 		t1.start();
@@ -199,8 +225,10 @@ public class Game implements ActionListener, KeyListener {
             */
 
 
-            if (!menu.isVisible())
+            if (!menu.isVisible()) {
+                menu.aktualizacjaKili();
                 menu.setVisible(true);
+            }
 
         } else if (id == KeyEvent.VK_SPACE) {
 		    setGameStatus(2);
@@ -255,6 +283,14 @@ public class Game implements ActionListener, KeyListener {
     public synchronized int getGameStatus() { return gameStatus; }
 
     public synchronized void setGameStatus(int gameStatus) {this.gameStatus = gameStatus;  }
+
+    public static int getUserId() {
+        return userId;
+    }
+
+    public static void setUserId(int userId) {
+        Game.userId = userId;
+    }
 }
 
 class ServerThread extends Thread  {
@@ -365,6 +401,7 @@ class ServerThread extends Thread  {
             ex.printStackTrace();
         }
     }
+
 
 }
 

@@ -1,9 +1,13 @@
 package Game;
 
+import SQLlight.BazaLonczenie;
+import SQLlight.Uzytkownicy;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,8 +27,8 @@ public class Menu extends JFrame implements ActionListener , KeyListener
 
 	JButton bStart;
 	JCheckBox cNiesmiertelnosc;
-	JLabel lNiesmiertelnosc,lSpeed,lBallSpeed,lTekst;
-	JTextField tHealth,tSpeed,tBallSpeed;;
+	JLabel lNiesmiertelnosc,lSpeed,lBallSpeed,lTekst,lKile;
+	JTextField tHealth,tSpeed,tBallSpeed;
 	
 	public Menu() 
 	{
@@ -89,6 +93,13 @@ public class Menu extends JFrame implements ActionListener , KeyListener
 		lBallSpeed = new JLabel("Ball Speed");
 		lBallSpeed.setBounds(40, 80, 120, 20);
 		frame.add(lBallSpeed);
+
+		lKile = new JLabel("Kile: ");
+		lKile.setBounds(40, 100, 120, 20);
+		frame.add(lKile);
+
+
+
 		//-----------------
 		//---------------Test
 		lTekst = new JLabel("<html>M - monster <br> "
@@ -97,11 +108,22 @@ public class Menu extends JFrame implements ActionListener , KeyListener
 		lTekst.setBounds(40, 260, 250, 60);
 		frame.add(lTekst);
 		//-----------------
-		
+
 
 		
 		requestFocusInWindow();
 		frame.setVisible(true);
+	}
+
+	public  void aktualizacjaKili(){
+		BazaLonczenie b = new BazaLonczenie();
+		List<Uzytkownicy> urzytkownicy = b.selectUzytkownik();
+
+		for(Uzytkownicy k: urzytkownicy){
+			if(k.getId()==Game.getUserId())
+				lKile.setText("Kile: "+k.getKills());
+				frame.repaint();
+			}
 	}
 
 	@Override

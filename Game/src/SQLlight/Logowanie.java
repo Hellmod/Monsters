@@ -7,7 +7,6 @@ import java.awt.event.KeyListener;
 import java.util.List;
 
 import Game.Game;
-import model.Uzytkownicy;
 
 import javax.swing.*;
 
@@ -17,6 +16,7 @@ public class Logowanie extends JFrame implements ActionListener, KeyListener {
 	JLabel lLogin, lHaslo;
 	JTextField tLogin;
 	JPasswordField tHaslo;
+	int id;
 
 	public static void main(String[] args) {
 		new Logowanie();
@@ -37,7 +37,7 @@ public class Logowanie extends JFrame implements ActionListener, KeyListener {
 		lLogin.setBounds(20, 20, 150, 20);
 		add(lLogin);
 
-		tLogin = new JTextField("ala");
+		tLogin = new JTextField("Ala");
 		tLogin.setBounds(100, 20, 150, 20);
 		tLogin.setFocusable(true);
 		tLogin.addKeyListener(this);
@@ -69,9 +69,9 @@ public class Logowanie extends JFrame implements ActionListener, KeyListener {
 	}
 
 	private void login() {
-		// TODO połczenie z bazą danych
+
 		if ( logowanie(tLogin.getText(),tHaslo.getText())) {
-			new Game();
+			new Game(id);
 			this.dispose();
 		} else
 			alert("Blad logowania", "Niepoprawy login lub haslo");
@@ -87,7 +87,7 @@ public class Logowanie extends JFrame implements ActionListener, KeyListener {
 		}
 
 		if (id == KeyEvent.VK_ENTER) {
-			System.out.println("Enter");
+
 			login();
 		}
 
@@ -113,9 +113,10 @@ public class Logowanie extends JFrame implements ActionListener, KeyListener {
 		List<Uzytkownicy> urzytkownicy = b.selectUzytkownik();
 
 		for(Uzytkownicy k: urzytkownicy)
-			if(k.getLogin().equals(login) &&k.getHaslo().equals(haslo))
-				return  true;
-
+			if(k.getLogin().equals(login) &&k.getHaslo().equals(haslo)) {
+				id=k.getId();
+				return true;
+			}
 		return false;
 	}
 
