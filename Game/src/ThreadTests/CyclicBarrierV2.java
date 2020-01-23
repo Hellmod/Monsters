@@ -20,8 +20,8 @@ public class CyclicBarrierV2 {
             public void run() {
                 for (int x : dane) {
                     System.out.print(" " + x);
+                    System.out.println();
                 }
-                System.out.println();
             }
         });
     }

@@ -1,5 +1,7 @@
 package Game;
 
+import GroupChatMP.Client;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -14,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -36,6 +39,7 @@ public class Game implements ActionListener, KeyListener {
     public JFrame jframe;
     public static ArrayList<Ball> listBall = new ArrayList<Ball>();
     public static ArrayList<Monster> listMonster = new ArrayList<Monster>();
+    public static ArrayList<Player> listPlayer = new ArrayList<Player>();
 	public Thread t1 = new BallThread(this);
     public Thread serverThread;
     Menu menu = new Menu();
@@ -74,9 +78,10 @@ public class Game implements ActionListener, KeyListener {
         setGameStatus(1);
 
         player = new Player();
-        serverThread= new ServerThread(this.player,this);
+        serverThread= new ServerThread(this.player,this,this.listPlayer);
 		t1.start();
 		serverThread.start();
+        jframe.setTitle("Game V 0.2   "+player.hashCode());
     }
 
     public void update() {
@@ -117,6 +122,8 @@ public class Game implements ActionListener, KeyListener {
             for (int i = 0; i < listBall.size(); i++) listBall.get(i).render(g);
 
             for (int i = 0; i < listMonster.size(); i++) listMonster.get(i).render(g);
+
+            for (int i = 0; i < listPlayer.size(); i++) listPlayer.get(i).render(g);
         }
         if (getGameStatus() == 1) {
             g.setColor(Color.WHITE);
@@ -249,23 +256,30 @@ class ServerThread extends Thread  {
     Socket gniazdo;
     BufferedReader czytelnik;
     PrintWriter pisarz;
+
+
+    
     Player player;
     Game game;
+    ArrayList<Player> listPlayer;
 
-    ServerThread(Player player,Game game){
+    ServerThread(Player player,Game game,ArrayList<Player> listPlayer){
+        this.listPlayer=listPlayer;
         this.player=player;
         this.game=game;
+        Thread receiverThread = new Thread(new MessageReceiver());
     }
     @Override
     public void run() {
         konfigurujKomunikacje();
         while (true){
+
             if(game.getGameStatus()==2) {
-                System.out.println(player.x+" "+player.y);
-                //sendWspulrzendne(player.x, player.y);
-                sendPlayer(player);
+
+                sendWspulrzendne(player.x, player.y);
+
                 try {
-                    this.sleep(500);
+                    this.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -273,11 +287,48 @@ class ServerThread extends Thread  {
         }
     }
 
+    public class MessageReceiver implements Runnable {
+        public void run() {
+            String message;
+            List<Integer> hashTab = null;
+            hashTab.add(player.hashCode());
+            try {
+                while ((message = czytelnik.readLine()) != null) {
+                    System.out.println("message: "+ message);
+                    /*
+                    String[] tab =message.split(";");
+                    int x= Integer.parseInt(tab[0]);
+                    int y= Integer.parseInt(tab[0]);
+                    int hashCode= Integer.parseInt(tab[0]);
+                    if(!hashTab.contains(hashCode))
+                        listPlayer.add(new Player());
+
+                    for (Player p:listPlayer) {
+                        if(p.hashCode()==hashCode) {
+                            p.x=x;
+                            p.y=y;
+                        }
+
+                    }
+
+
+
+                    System.out.println("message: "+ x+";"+y+";"+hashCode);
+                    */
+
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 
     private void sendWspulrzendne(int x, int y){
+        String kod=x+";"+y+";"+player.hashCode();
         try {
-            pisarz.print(x);
-            pisarz.print(y);
+            System.out.println(kod);
+            pisarz.println(kod);
             pisarz.flush();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -299,7 +350,7 @@ class ServerThread extends Thread  {
             InputStreamReader czytelnikStrm = new InputStreamReader(gniazdo.getInputStream());
             czytelnik = new BufferedReader(czytelnikStrm);
             pisarz = new PrintWriter(gniazdo.getOutputStream());
-            System.out.println("obsÅ‚uga sieci przygotowana");
+            System.out.println("obsługa sieci przygotowana");
         } catch (IOException ex) {
             ex.printStackTrace();
         }

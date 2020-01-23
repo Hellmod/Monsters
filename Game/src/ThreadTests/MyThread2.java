@@ -16,8 +16,9 @@ public class MyThread2 extends Thread {
         while (true) {
             jaki_ruch();
 
+            System.out.println(Start.bariera1.getNumberWaiting());
             Start.bariera1.reset();
-
+            System.out.println(Start.bariera1.getNumberWaiting());
         }
 
     }

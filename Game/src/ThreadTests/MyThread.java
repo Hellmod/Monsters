@@ -16,11 +16,12 @@ public class MyThread extends Thread {
 
         while (true) {
             jaki_ruch();
+
             try {
 
-
+                System.out.println(Start.bariera1.getNumberWaiting());
                 Start.bariera1.await();
-
+                System.out.println(Start.bariera1.getNumberWaiting());
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
